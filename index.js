@@ -1,5 +1,13 @@
-const math = require('./math.js');
+const { SSL_OP_NO_TLSv1_1 } = require('constants');
+const fs = require('fs');
 
-const result = math.sum(2, 3);
+//const data = fs.readFileSync('./data.txt', 'utf8');
+//console.log(data);
 
-console.log(result);
+const data = fs.readFile('./data.txt', 'utf8', function(err, data) {
+    console.log(data);
+})
+
+for (var i = 0; i < 10; i++) {
+    console.log(i);
+}
