@@ -2,6 +2,7 @@ const { json } = require('express');
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
 
 var users = [
     { id: 1, name: 'alice' }, 
@@ -10,6 +11,8 @@ var users = [
 ];
 
 app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/users', function(req, res) {
     const paramLimit = req.query.limit || 10;
@@ -42,6 +45,29 @@ app.get('/users/:id', function(req, res) {
     }
 
     res.json(user);
+});
+
+app.post('/users', (req, res) => {
+    const name = req.body.name;
+    
+    if (name === undefined) {
+        return res.status(400)
+            .end();
+    }
+
+    const user = users.filter((user) => {
+        return user.name === name;
+    })[0];
+
+    if (user) {
+        return res.status(409)
+            .end();
+    }
+
+    const id = Date.now();
+    const newUser = {id, name};
+    res.status(201)
+        .json(newUser);
 });
 
 app.delete('/users/:id', function(req, res) {
